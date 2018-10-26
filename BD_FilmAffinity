@@ -1,0 +1,2 @@
+peliculas(id+, título, anyo, sipnosis, duracion, genero_id*)
+generos(id+, genero)
