@@ -11,9 +11,11 @@
                         ? trim($_GET['buscarTitulo']) : '';
 
         $con = new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa'); //conexion
-        $st = $con->prepare("SELECT *
-                            FROM peliculas
-                            WHERE titulo ILIKE :titulo"); //sentencia
+        $st = $con->prepare(" SELECT p.*, genero
+                                FROM peliculas p
+                                JOIN generos g
+                                  ON genero_id = g.id
+                               WHERE titulo ILIKE :titulo"); //sentencia
         $st->execute([':titulo'=> "%$buscarTitulo%"]);
         ?>
         <div class="">
@@ -33,22 +35,20 @@
             </style>
             <table style="margin:auto">
                 <thead>
-                    <th>Id</th>
                     <th>Titulo</th>
                     <th>Año</th>
                     <th>Sinopsis</th>
                     <th>Duracion</th>
-                    <th>Género id</th>
+                    <th>Género</th>
                 </thead>
                 <tbody>
             <?php foreach ($st as $fila): ?>
                  <tr>
-                     <td><?= $fila['id']; ?></td>
                      <td><?= $fila['titulo']; ?></td>
                      <td><?= $fila['anyo']; ?></td>
                      <td><?= $fila['sinopsis']; ?></td>
                      <td><?= $fila['duracion']; ?></td>
-                     <td><?= $fila['genero_id']; ?></td>
+                     <td><?= $fila['genero']; ?></td>
                  </tr>
              <?php endforeach; ?>
             </tbody>
