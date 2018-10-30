@@ -34,6 +34,6 @@ VALUES ('Comedia')
 
 INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
 VALUES ('Los últimos Jedi', 2017, 'Va uno y se cae...', 204, 3)
-     , ('Los mataos', 2018, '6 estudiantes de los que 5 son mataos y muere primero el negro (2pac)")', 112, 1)
+     , ('Los mataos', 2018, '6 estudiantes de los que 5 son mataos y muere primero el negro (2pac)', 112, 1)
      , ('Los Goonies', 1985, 'Unos niños encuentran un tesoro', 120, 5)
      , ('Aquí llega Condemor', 1996, 'Mejor no cuento nada...', 90, 1);
