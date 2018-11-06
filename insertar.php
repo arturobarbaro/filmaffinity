@@ -18,32 +18,26 @@
             'genero_id' => '',
         ];
         extract(PAR);
-        if (isset($_POST['titulo'], $_POST['anyo'], $_POST['sinopsis'],
-                  $_POST['duracion'], $_POST['genero_id'])) {
+        try {
+            comprobarParametros(PAR);
             extract(array_map('trim', $_POST), EXTR_IF_EXISTS);
-            // Filtrado de la entrada
             $error = [];
-            $fltTitulo = comprobarTitulo($error);
-            $fltAnyo = comprobarAnyo($error);
-            $fltSinopsis = trim(filter_input(INPUT_POST, 'sinopsis'));
-            $fltDuracion = comprobarDuracion($error);
-            $fltGeneroId = comprobarGeneroId($error);
-            if (empty($error)) {
-                $pdo = conectar();
-                $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
-                VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
-                $st->execute([
-                    ':titulo' => $fltTitulo,
-                    ':anyo' => $fltAnyo,
-                    ':sinopsis' => $fltSinopsis,
-                    ':duracion' => $fltDuracion,
-                    ':genero_id' => $fltGeneroId,
-                ]);
-                header('Location: index.php');
-            } else {
-                foreach ($error as $err) {
-                    echo "<h4>$err</h4>";
-                }
+            $flt['titulo'] = comprobarTitulo($error);
+            $flt['anyo'] = comprobarAnyo($error);
+            $flt['sinopsis'] = trim(filter_input(INPUT_POST, 'sinopsis'));
+            $flt['duracion'] = comprobarDuracion($error);
+            $pdo = conectar();
+            $flt['genero_id'] = comprobarGeneroId($pdo, $error);
+            comprobarErrores($error);
+            insertarPelicula($pdo, $flt);
+            header('Location: index.php');
+        } catch (EmptyParamException $e) {
+            // No hago nada
+        } catch (ParamException $e) {
+            header('Location: index.php');
+        } catch (ValidationException $e) {
+            foreach ($error as $err) {
+                echo "<h4>$err</h4>";
             }
         }
         ?>
@@ -55,32 +49,32 @@
                 </div>
                 <div class="panel-body">
                     <form action="" method="post">
-                        <div class="form-group">
-                            <label for="titulo">Título</label>
+                        <div class="form-group <?= hasError('titulo', $error) ?>">
+                            <label for="titulo" class="control-label">Título</label>
                             <input id="titulo" type="text" name="titulo"
                                    class="form-control" value="<?= $titulo ?>">
                         </div>
-                        <div class="form-group">
-                            <label for="anyo">Año</label>
+                        <div class="form-group <?= hasError('anyo', $error) ?>">
+                            <label for="anyo" class="control-label">Año</label>
                             <input id="anyo" type="text" name="anyo"
                                    class="form-control" value="<?= $anyo ?>">
                         </div>
                         <div class="form-group">
-                            <label for="sinopsis">Sinopsis</label>
+                            <label for="sinopsis" class="control-label">Sinopsis</label>
                             <textarea id="sinopsis"
                                       name="sinopsis"
                                       rows="8"
                                       cols="80"
                                       class="form-control"><?= $sinopsis ?></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="duracion">Duración</label>
+                        <div class="form-group <?= hasError('duracion', $error) ?>">
+                            <label for="duracion" class="control-label">Duración</label>
                             <input id="duracion" type="text" name="duracion"
                                    class="form-control"
                                    value="<?= $duracion ?>">
                         </div>
-                        <div class="form-group">
-                            <label for="genero_id">Género</label>
+                        <div class="form-group <?= hasError('anyo', $error) ?>">
+                            <label for="genero_id" class="control-label">Género</label>
                             <input id="genero_id" type="text" name="genero_id"
                                    class="form-control"
                                    value="<?= $genero_id?>">
