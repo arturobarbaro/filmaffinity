@@ -53,6 +53,9 @@
                             <label for="titulo" class="control-label">Título</label>
                             <input id="titulo" type="text" name="titulo"
                                    class="form-control" value="<?= $titulo ?>">
+                                   <small id="tituloNulo" class="form-text text-muted">
+                                       <?= $error['titulo']?>
+                                   </small>
                         </div>
                         <div class="form-group <?= hasError('anyo', $error) ?>">
                             <label for="anyo" class="control-label">Año</label>

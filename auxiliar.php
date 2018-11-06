@@ -100,3 +100,7 @@ function hasError($key, $error)
 {
     return array_key_exists($key, $error) ? 'has-error' : '';
 }
+
+function pintarError($key, $error){
+
+}
