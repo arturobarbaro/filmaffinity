@@ -20,23 +20,24 @@
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
                     $pdo->exec('LOCK TABLE generos IN SHARE MODE');
-                    if (!buscarPelicula($pdo, $id)) { ?>
-                        <h3>La película no existe.</h3>
+                    if (!buscarGenero($pdo, $id)) { ?>
+                        <h3>El género no existe.</h3>
                         <?php
                     } else {
-                        $st = $pdo->prepare('DELETE FROM peliculas WHERE id = :id');
+                        $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
                         $st->execute([':id' => $id]); ?>
-                        <h3>Película borrada correctamente.</h3>
+                        <h3>Género borrado correctamente.</h3>
                         <?php
                     }
                     $pdo->commit();
                 }
-                $buscarTitulo = isset($_GET['buscarTitulo'])
-                ? trim($_GET['buscarTitulo'])
+                $buscarGenero = isset($_GET['buscarGenero'])
+                ? trim($_GET['buscarGenero'])
                 : '';
-                $st = $pdo->prepare('SELECT  genero
-                                       FROM generos ');
-                $st->execute();
+                $st = $pdo->prepare('SELECT  *
+                                       FROM generos
+                                       WHERE position(lower(:genero) in lower(genero)) != 0');
+                $st->execute([':genero' => $buscarGenero]);
                 ?>
             </div>
             <div class="row" id="busqueda">
@@ -45,9 +46,9 @@
                         <legend>Buscar...</legend>
                         <form action="" method="get" class="form-inline">
                             <div class="form-group">
-                                <label for="buscarTitulo">Buscar por género:</label>
-                                <input id="buscarTitulo" type="text" name="buscarTitulo"
-                                       value="<?= $buscarTitulo ?>"
+                                <label for="buscarGenero">Buscar por género:</label>
+                                <input id="buscarGenero" type="text" name="buscarGenero"
+                                       value="<?= $buscarGenero ?>"
                                        class="form-control">
                             </div>
                             <input type="submit" value="Buscar" class="btn btn-primary">

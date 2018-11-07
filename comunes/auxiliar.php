@@ -18,6 +18,12 @@ function buscarPelicula($pdo, $id)
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
+function buscarGenero($pdo, $id)
+{
+    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
+    $st->execute([':id' => $id]);
+    return $st->fetch();
+}
 function comprobarTitulo(&$error)
 {
     $fltTitulo = trim(filter_input(INPUT_POST, 'titulo'));
