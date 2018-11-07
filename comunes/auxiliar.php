@@ -25,12 +25,6 @@ function buscarPelicula($pdo, $id)
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
-function buscarGenero($pdo, $id)
-{
-    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
-    $st->execute([':id' => $id]);
-    return $st->fetch();
-}
 function comprobarTitulo(&$error)
 {
     $fltTitulo = trim(filter_input(INPUT_POST, 'titulo'));
@@ -87,30 +81,22 @@ function comprobarGeneroId($pdo, &$error)
     }
     return $fltGeneroId;
 }
-
-function comprobarGenero($pdo, &$error)
-{
-    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
-    if ($fltGenero === '') {
-        $error['genero'] = 'El género es obligatorio.';
-    } elseif (mb_strlen($fltGenero) > 255) {
-        $error['genero'] = "El género es demasiado largo.";
-    }
-    return $fltGenero;
-}
-
 function insertarPelicula($pdo, $fila)
 {
     $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
                          VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
     $st->execute($fila);
 }
-
-function insertarGenero($pdo, $fila)
+function modificarPelicula($pdo, $fila, $id)
 {
-    $st = $pdo->prepare('INSERT INTO generos (genero)
-                         VALUES (:genero)');
-    $st->execute($fila);
+    $st = $pdo->prepare('UPDATE peliculas
+                            SET titulo = :titulo
+                              , anyo = :anyo
+                              , sinopsis = :sinopsis
+                              , duracion = :duracion
+                              , genero_id = :genero_id
+                          WHERE id = :id');
+    $st->execute($fila + ['id' => $id]);
 }
 function comprobarParametros($par)
 {
@@ -153,13 +139,13 @@ function mostrarFormulario($valores, $error, $accion)
                 <div class="form-group <?= hasError('titulo', $error) ?>">
                     <label for="titulo" class="control-label">Título</label>
                     <input id="titulo" type="text" name="titulo"
-                           class="form-control" value="<?= $titulo ?>">
+                           class="form-control" value="<?= h($titulo) ?>">
                     <?php mensajeError('titulo', $error) ?>
                 </div>
                 <div class="form-group <?= hasError('anyo', $error) ?>">
                     <label for="anyo" class="control-label">Año</label>
                     <input id="anyo" type="text" name="anyo"
-                           class="form-control" value="<?= $anyo ?>">
+                           class="form-control" value="<?= h($anyo) ?>">
                     <?php mensajeError('anyo', $error) ?>
                 </div>
                 <div class="form-group">
@@ -168,20 +154,20 @@ function mostrarFormulario($valores, $error, $accion)
                               name="sinopsis"
                               rows="8"
                               cols="80"
-                              class="form-control"><?= $sinopsis ?></textarea>
+                              class="form-control"><?= h($sinopsis) ?></textarea>
                 </div>
                 <div class="form-group <?= hasError('duracion', $error) ?>">
                     <label for="duracion" class="control-label">Duración</label>
                     <input id="duracion" type="text" name="duracion"
                            class="form-control"
-                           value="<?= $duracion ?>">
+                           value="<?= h($duracion) ?>">
                     <?php mensajeError('duracion', $error) ?>
                 </div>
                 <div class="form-group <?= hasError('genero_id', $error) ?>">
                     <label for="genero_id" class="control-label">Género</label>
                     <input id="genero_id" type="text" name="genero_id"
                            class="form-control"
-                           value="<?= $genero_id?>">
+                           value="<?= h($genero_id) ?>">
                     <?php mensajeError('genero_id', $error) ?>
                 </div>
                 <input type="submit" value="<?= $accion ?>"
@@ -195,4 +181,40 @@ function mostrarFormulario($valores, $error, $accion)
 function h($cadena)
 {
     return htmlspecialchars($cadena, ENT_QUOTES);
+}
+
+
+function comprobarId()
+{
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    if ($id === null || $id === false) {
+        throw new ParamException();
+    }
+    return $id;
+}
+function comprobarPelicula($pdo, $id)
+{
+    $fila = buscarPelicula($pdo, $id);
+    if ($fila === false) {
+        throw new ParamException();
+    }
+    return $fila;
+}
+function buscarGenero($pdo, $id)
+{
+    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
+    $st->execute([':id' => $id]);
+    return $st->fetch();
+}
+
+
+function comprobarGenero($pdo, &$error)
+{
+    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
+    if ($fltGenero === '') {
+        $error['genero'] = 'El género es obligatorio.';
+    } elseif (mb_strlen($fltGenero) > 255) {
+        $error['genero'] = "El género es demasiado largo.";
+    }
+    return $fltGenero;
 }
