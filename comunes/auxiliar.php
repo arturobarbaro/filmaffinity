@@ -74,10 +74,29 @@ function comprobarGeneroId($pdo, &$error)
     }
     return $fltGeneroId;
 }
+
+function comprobarGenero($pdo, &$error)
+{
+    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
+    if ($fltGenero === '') {
+        $error['genero'] = 'El género es obligatorio.';
+    } elseif (mb_strlen($fltGenero) > 255) {
+        $error['genero'] = "El género es demasiado largo.";
+    }
+    return $fltGenero;
+}
+
 function insertarPelicula($pdo, $fila)
 {
     $st = $pdo->prepare('INSERT INTO peliculas (titulo, anyo, sinopsis, duracion, genero_id)
                          VALUES (:titulo, :anyo, :sinopsis, :duracion, :genero_id)');
+    $st->execute($fila);
+}
+
+function insertarGenero($pdo, $fila)
+{
+    $st = $pdo->prepare('INSERT INTO generos (genero)
+                         VALUES (:genero)');
     $st->execute($fila);
 }
 function comprobarParametros($par)
@@ -100,7 +119,10 @@ function hasError($key, $error)
 {
     return array_key_exists($key, $error) ? 'has-error' : '';
 }
-
-function pintarError($key, $error){
-
+function mensajeError($key, $error)
+{
+    if (isset($error[$key])) { ?>
+        <small class="help-block"><?= $error[$key] ?></small>
+    <?php
+    }
 }

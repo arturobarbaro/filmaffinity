@@ -14,7 +14,7 @@
         <div class="container">
             <div class="row">
                 <?php
-                require 'auxiliar.php';
+                require '../comunes/auxiliar.php';
                 $pdo = conectar();
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
@@ -79,7 +79,7 @@
                                     <td><?= $fila['duracion'] ?></td>
                                     <td><?= $fila['genero'] ?></td>
                                     <td>
-                                        <a href="confirm_borrado.php?id=<?= $fila['id'] ?>"
+                                        <a href="../peliculas/confirm_borrado.php?id=<?= $fila['id'] ?>"
                                            class="btn btn-xs btn-danger">
                                             Borrar
                                         </a>
@@ -92,7 +92,7 @@
             </div>
             <div class="row">
                 <div class="text-center">
-                    <a href="insertar.php" class="btn btn-info">Insertar una nueva película</a>
+                    <a href="../peliculas/insertar.php" class="btn btn-info">Insertar una nueva película</a>
                 </div>
             </div>
         </div>
