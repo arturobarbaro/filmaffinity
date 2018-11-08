@@ -15,9 +15,7 @@
             <div class="row">
                 <?php
                 require '../comunes/auxiliar.php';
-
                 $pdo = conectar();
-                
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
