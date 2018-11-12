@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="es" dir="ltr">
     <head>
@@ -11,10 +12,13 @@
         </style>
     </head>
     <body>
+        <?php
+        require './auxiliar.php';
+        require '../comunes/auxiliar.php';
+        mostrarCabezera() ?>
         <div class="container">
             <div class="row">
                 <?php
-                require '../comunes/auxiliar.php';
                 $pdo = conectar();
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];

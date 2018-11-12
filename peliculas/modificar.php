@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="es" dir="ltr">
     <head>
@@ -9,6 +10,7 @@
     </head>
     <body>
         <?php
+        require './auxiliar.php';
         require '../comunes/auxiliar.php';
         try {
             $error = [];
@@ -24,6 +26,7 @@
             $flt['genero_id'] = comprobarGeneroId($pdo, $error);
             comprobarErrores($error);
             modificarPelicula($pdo, $flt, $id);
+            $_SESSION['mensaje'] = 'Película modificada correctamente.';
             header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada

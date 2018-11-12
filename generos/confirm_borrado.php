@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html lang="es" dir="ltr">
     <head>
@@ -9,6 +10,7 @@
     </head>
     <body>
         <?php
+        require './auxiliar.php';
         require '../comunes/auxiliar.php';
         if (isset($_GET['id'])) {
             $id = $_GET['id'];

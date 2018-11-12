@@ -5,23 +5,24 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Insertar una nueva película</title>
+        <title>Iniciar sesión</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body>
         <?php
-        require './auxiliar.php';
         require '../comunes/auxiliar.php';
-
-        extract(PAR);
+        const PAR_LOGIN = ['login' => '', 'password' => ''];
+        $valores = PAR_LOGIN;
         try {
             $error = [];
-            comprobarParametros(PAR);
-            extract(array_map('trim', $_POST), EXTR_IF_EXISTS);
             $pdo = conectar();
-            $flt['genero'] = comprobarGenero($pdo, $error);
+            comprobarParametros(PAR_LOGIN);
+            $valores = array_map('trim', $_POST);
+            $flt['login'] = comprobarLogin($error);
+            $flt['password'] = comprobarPassword($error);
+            comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
-            insertarGenero($pdo, $flt);
+            // Sólo queda loguearse
             header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
@@ -29,25 +30,19 @@
             header('Location: index.php');
         }
         ?>
-        <br>
         <div class="container">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Insertar un nuevo género...</h3>
-                </div>
-                <div class="panel-body">
-                    <form action="" method="post">
-                        <div class="form-group <?= hasError('genero', $error) ?>">
-                            <label for="genero" class="control-label">Género</label>
-                            <input id="genero" type="text" name="genero"
-                                   class="form-control" value="<?= $genero ?>">
-                            <?php mensajeError('genero', $error) ?>
-                        </div>
-                        <input type="submit" value="Insertar"
-                               class="btn btn-success">
-                        <a href="index.php" class="btn btn-info">Volver</a>
-                    </form>
-                </div>
+            <div class="row">
+                <form action="" method="post">
+                    <div class="form-group">
+                        <label for="login">Usuario:</label>
+                        <input class="form-control" type="text" name="login" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input class="form-control" type="password" name="password" value="">
+                    </div>
+                    <button type="submit" class="btn btn-default">Iniciar sesión</button>
+                </form>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
