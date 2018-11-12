@@ -82,6 +82,15 @@ function comprobarPassword(&$error)
     }
     return $password;
 }
+/**
+ * Comprueba si existe el usuario indicado en el array
+ * $valores, con el nombre y la contraseña dados.
+ *
+ * @param  array      $valores El nombre y la contraseña
+ * @param  PDO        $pdo     Objeto PDO usado para buscar al usuario
+ * @param  array      $error   El array de errores
+ * @return array|bool          La fila del usuario si existe; false e.o.c.
+ */
 function comprobarUsuario($valores, $pdo, &$error)
 {
     extract($valores);
@@ -92,12 +101,12 @@ function comprobarUsuario($valores, $pdo, &$error)
     $fila = $st->fetch();
     if ($fila !== false) {
         if (password_verify($password, $fila['password'])) {
-            return;
+            return $fila;
         }
     }
     $error['sesion'] = 'El usuario o la contraseña son incorrectos.';
+    return false;
 }
-
 
 //MIAS
 function buscarGenero($pdo, $id)
@@ -127,7 +136,12 @@ function mostrarCabezera(){
                 <a class="navbar-brand" href="/">FilmAffinity</a>
             </div>
             <div class="navbar-text navbar-right">
-                <a href="../comunes/login.php" class="btn btn-success">Login</a>
+                    <?php if (isset($_SESSION['usuario'])): ?>
+                        <?= $_SESSION['usuario'] ?>
+                        <a href="logout.php" class="btn btn-success">Logout</a>
+                    <?php else: ?>
+                        <a href="login.php" class="btn btn-success">Login</a>
+                    <?php endif ?>
             </div>
         </div>
     </nav>
