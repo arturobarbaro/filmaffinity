@@ -107,7 +107,6 @@ function comprobarUsuario($valores, $pdo, &$error)
     $error['sesion'] = 'El usuario o la contraseña son incorrectos.';
     return false;
 }
-
 //MIAS
 function buscarGenero($pdo, $id)
 {
@@ -138,9 +137,9 @@ function mostrarCabezera(){
             <div class="navbar-text navbar-right">
                     <?php if (isset($_SESSION['usuario'])): ?>
                         <?= $_SESSION['usuario'] ?>
-                        <a href="logout.php" class="btn btn-success">Logout</a>
+                        <a href="../comunes/logout.php" class="btn btn-success">Logout</a>
                     <?php else: ?>
-                        <a href="login.php" class="btn btn-success">Login</a>
+                        <a href="../comunes/login.php" class="btn btn-success">Login</a>
                     <?php endif ?>
             </div>
         </div>

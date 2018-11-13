@@ -10,7 +10,8 @@
     </head>
     <body>
         <?php
-        require '../comunes/auxiliar.php';
+        require './auxiliar.php';
+        mostrarCabezera();
         const PAR_LOGIN = ['login' => '', 'password' => ''];
         $valores = PAR_LOGIN;
         try {
