@@ -8,11 +8,20 @@ class ParamException extends Exception
 class EmptyParamException extends Exception
 {
 }
+/**
+ * Conecta con la BD
+ */
 function conectar()
 {
     return new PDO('pgsql:host=localhost;dbname=fa', 'fa', 'fa');
 }
 
+/**
+ * Comprueba los parametros.
+ * @param  array      $par   El array de valores
+ * @throws new EmptyParamException()  si no se reciben comprobarParametros
+ *            ParamException() si los parametros son erroneos
+ */
 function comprobarParametros($par)
 {
     if (empty($_POST)) {
@@ -23,16 +32,31 @@ function comprobarParametros($par)
         throw new ParamException();
     }
 }
+/**
+ * Comprueba los errores del array
+ * @param  array      $error   El array de errores
+ * @throws new ValidationException si el array no esta vacio
+ */
 function comprobarErrores($error)
 {
     if (!empty($error)) {
         throw new ValidationException();
     }
 }
+/**
+ *
+ * @param  key        $key     La clave del array
+ * @param  array      $error   El array de errores
+ */
 function hasError($key, $error)
 {
     return array_key_exists($key, $error) ? 'has-error' : '';
 }
+/**
+ * Muestra el mensaje de error
+ * @param  key        $key     La clave del array
+ * @param  array      $error   El array de errores
+ */
 function mensajeError($key, $error)
 {
     if (isset($error[$key])) { ?>
@@ -40,11 +64,20 @@ function mensajeError($key, $error)
     <?php
     }
 }
-
+/**
+ * Evita el XSS
+ * @param  String        $cadena     Codigo a depurar
+ * @return htmlspecialchars($cadena, ENT_QUOTES)
+ */
 function h($cadena)
 {
     return htmlspecialchars($cadena, ENT_QUOTES);
 }
+/**
+ * Comprueba que el id existe y es valido
+ * @throws ParamException si el id es erroneo
+ * @return $id
+ */
 function comprobarId()
 {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -53,6 +86,13 @@ function comprobarId()
     }
     return $id;
 }
+/**
+ * Comprueba que existe la pelicula recibida
+ * @param  PDO        $pdo     Objeto PDO usado para buscar al usuario
+ * @param  BIGSERIAL  $id      Identificador de la pelicula
+ * @throws new ParamException() si no existe
+ * @return $fila      La fila de la consulta si es válida
+ */
 function comprobarPelicula($pdo, $id)
 {
     $fila = buscarPelicula($pdo, $id);
@@ -61,11 +101,19 @@ function comprobarPelicula($pdo, $id)
     }
     return $fila;
 }
-
+/**
+ * Funcion para seleccionar una opción por defecto
+ * @return  $a == $b ? 'selected' : '';
+ */
 function selected($a, $b)
 {
     return $a == $b ? 'selected' : '';
 }
+/**
+ * Trimea y comprueba que el nombre de usuario no es vacio
+ * @param  array      $error   El array de errores
+ * @return $login si existe y es valido
+ */
 function comprobarLogin(&$error)
 {
     $login = trim(filter_input(INPUT_POST, 'login'));
@@ -74,6 +122,12 @@ function comprobarLogin(&$error)
     }
     return $login;
 }
+/**
+ * Trimea y comprueba que ela contraseña no es vacia
+ *
+ * @param  array      &$error   El array de errores
+ * @return $password si no es vacia
+ */
 function comprobarPassword(&$error)
 {
     $password = trim(filter_input(INPUT_POST, 'password'));
@@ -108,13 +162,16 @@ function comprobarUsuario($valores, $pdo, &$error)
     return false;
 }
 //MIAS
+/**
+ *
+ */
 function buscarGenero($pdo, $id)
 {
-    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id');
+    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id
+                         OR genero = :id');
     $st->execute([':id' => $id]);
     return $st->fetch();
 }
-
 
 function comprobarGenero($pdo, &$error)
 {
@@ -123,6 +180,8 @@ function comprobarGenero($pdo, &$error)
         $error['genero'] = 'El género es obligatorio.';
     } elseif (mb_strlen($fltGenero) > 255) {
         $error['genero'] = "El género es demasiado largo.";
+    } elseif (!buscarGenero($pdo, $fltGenero)) {
+        $error['genero'] = "El género ya existe.";
     }
     return $fltGenero;
 }
@@ -133,6 +192,8 @@ function mostrarCabezera(){
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">FilmAffinity</a>
+                <a class="navbar-brand" href="/peliculas/">Películas</a>
+                <a class="navbar-brand" href="/generos/">Géneros</a>
             </div>
             <div class="navbar-text navbar-right">
                     <?php if (isset($_SESSION['usuario'])): ?>

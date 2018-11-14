@@ -23,6 +23,8 @@ CREATE TABLE peliculas
                            ON UPDATE CASCADE
 );
 
+DROP TABLE IF EXISTS usuarios CASCADE;
+
 CREATE TABLE usuarios
 (
     id       BIGSERIAL   PRIMARY KEY

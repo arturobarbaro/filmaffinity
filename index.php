@@ -11,16 +11,9 @@
         </style>
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-inverse">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">FilmAffinity</a>
-                </div>
-                <div class="navbar-text navbar-right">
-                    <a href="../comunes/login.php" class="btn btn-success">Login</a>
-                </div>
-            </div>
-        </nav>
+        <?php
+        require './comunes/auxiliar.php';
+        mostrarCabezera() ?>
         <div class="container">
             <hr>
             <div class="row">

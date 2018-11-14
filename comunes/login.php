@@ -35,14 +35,22 @@
         <div class="container">
             <div class="row">
                 <form action="" method="post">
-                    <div class="form-group">
-                        <label for="login">Usuario:</label>
-                        <input class="form-control" type="text" name="login" value="">
+                    <div class="form-group <?= hasError('login', $error) ?>">
+                        <label for="login" class="control-label">Usuario:</label>
+                        <input id="usuario" class="form-control" type="text" name="login" value="">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group <?= hasError('password', $error)?>">
                         <label for="password">Contraseña:</label>
                         <input class="form-control" type="password" name="password" value="">
                     </div>
+                    <?php
+                    if (!comprobarLogin($error)){
+                        mensajeError('login', $error);
+                    } elseif (!comprobarPassword($error)){
+                        mensajeError('password', $error);
+                    } elseif (!comprobarUsuario($flt, $pdo, $error)){
+                        mensajeError('sesion', $error);
+                    }?>
                     <button type="submit" class="btn btn-default">Iniciar sesión</button>
                 </form>
             </div>
