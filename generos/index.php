@@ -17,6 +17,15 @@
         require '../comunes/auxiliar.php';
         mostrarCabezera() ?>
         <div class="container">
+            <br>
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="row">
+                    <div class="alert alert-success" role="alert">
+                        <?= $_SESSION['mensaje'] ?>
+                    </div>
+                </div>
+                <?php unset($_SESSION['mensaje']); ?>
+            <?php endif ?>
             <div class="row">
                 <?php
                 $pdo = conectar();
@@ -38,9 +47,10 @@
                 $buscarGenero = isset($_GET['buscarGenero'])
                 ? trim($_GET['buscarGenero'])
                 : '';
-                $st = $pdo->prepare('SELECT  *
+                $st = $pdo->prepare('SELECT *
                                        FROM generos
-                                       WHERE position(lower(:genero) in lower(genero)) != 0');
+                                      WHERE position(lower(:genero) in lower(genero)) != 0
+                                   ORDER BY id');
                 $st->execute([':genero' => $buscarGenero]);
                 ?>
             </div>
@@ -50,7 +60,7 @@
                         <legend>Buscar...</legend>
                         <form action="" method="get" class="form-inline">
                             <div class="form-group">
-                                <label for="buscarGenero">Buscar por género:</label>
+                                <label for="buscarGenero">Buscar por genero:</label>
                                 <input id="buscarGenero" type="text" name="buscarGenero"
                                        value="<?= $buscarGenero ?>"
                                        class="form-control">
@@ -71,11 +81,15 @@
                         <tbody>
                             <?php foreach ($st as $fila): ?>
                                 <tr>
-                                    <td><?= $fila['genero'] ?></td>
+                                    <td><?= h($fila['genero']) ?></td>
                                     <td>
-                                        <a href="../generos/confirm_borrado.php?id=<?= $fila['id'] ?>"
+                                        <a href="confirm_borrado.php?id=<?= $fila['id'] ?>"
                                            class="btn btn-xs btn-danger">
                                             Borrar
+                                        </a>
+                                        <a href="modificar.php?id=<?= $fila['id'] ?>"
+                                           class="btn btn-xs btn-info">
+                                            Modificar
                                         </a>
                                     </td>
                                 </tr>
@@ -83,14 +97,3 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div class="row">
-                <div class="text-center">
-                    <a href="../generos/insertar.php" class="btn btn-info">Insertar un nuevo género</a>
-                </div>
-            </div>
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    </body>
-</html>
