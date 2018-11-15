@@ -97,3 +97,8 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="row">
+                    <div class="text-center">
+                        <a href="insertar.php" class="btn btn-info">Insertar un nuevo género</a>
+                    </div>
+                </div>
