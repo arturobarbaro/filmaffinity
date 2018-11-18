@@ -23,9 +23,9 @@
             $flt['password'] = comprobarPassword($error);
             $usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
-            // Sólo queda loguearse
-            $_SESSION['usuario'] = $usuario['login'];
-            header('Location: ../index.php');
+            // Sólo queda registrarse
+            insertarUsuario($pdo,$flt);
+            header('Location: login.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
         } catch (ParamException $e) {
@@ -43,21 +43,29 @@
                         <label for="password">Contraseña:</label>
                         <input class="form-control" type="password" name="password" value="">
                     </div>
+                    <!-- <div class="form-group <?= hasError('password2', $error)?>">
+                        <label for="password">Repita la contraseña:</label>
+                        <input class="form-control" type="password" name="password2" value="">
+                    </div> -->
                     <?php
                     if (!comprobarLogin($error)){
                         mensajeError('login', $error);
+                    } // Comprobar 2 claves
+                    // elseif (!comprobarPassword($error)){
+                    //     mensajeError('password', $error);
+                    // }
+                    elseif (comprobarUsuario($flt, $pdo, $error)){
+                        mensajeError('sesion', $error);
                     } elseif (!comprobarPassword($error)){
                         mensajeError('password', $error);
-                    } elseif (!comprobarUsuario($flt, $pdo, $error)){
-                        mensajeError('sesion', $error);
-                    }?>
-                    <button type="submit" class="btn btn-success">Iniciar sesión</button>
+                    } ?>
+                    <button type="submit" class="btn btn-info">Registrarse</button>
                 </form>
             </div>
         </div>
         <div class="row">
             <div class="text-center">
-                <a href="./registrarse.php" class="btn btn-info">Registrarse</a>
+                <a href="/" class="btn btn-danger">Volver</a>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

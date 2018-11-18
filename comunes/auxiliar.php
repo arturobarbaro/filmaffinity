@@ -161,29 +161,11 @@ function comprobarUsuario($valores, $pdo, &$error)
     $error['sesion'] = 'El usuario o la contraseña son incorrectos.';
     return false;
 }
-//MIAS
-/**
- *
- */
-function buscarGenero($pdo, $id)
-{
-    $st = $pdo->prepare('SELECT * FROM generos WHERE id = :id
-                         OR genero = :id');
-    $st->execute([':id' => $id]);
-    return $st->fetch();
-}
 
-function comprobarGenero($pdo, &$error)
-{
-    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
-    if ($fltGenero === '') {
-        $error['genero'] = 'El género es obligatorio.';
-    } elseif (mb_strlen($fltGenero) > 255) {
-        $error['genero'] = "El género es demasiado largo.";
-    } elseif (!buscarGenero($pdo, $fltGenero)) {
-        $error['genero'] = "El género ya existe.";
-    }
-    return $fltGenero;
+function insertarUsuario($pdo,$fila){
+    $st = $pdo->prepare('INSERT INTO usuarios (login, password)
+                         VALUES (:login, :password)');
+    $st->execute($fila);
 }
 
 function mostrarCabezera(){
@@ -198,7 +180,7 @@ function mostrarCabezera(){
             <div class="navbar-text navbar-right">
                     <?php if (isset($_SESSION['usuario'])): ?>
                         <?= $_SESSION['usuario'] ?>
-                        <a href="../comunes/logout.php" class="btn btn-success">Logout</a>
+                        <a href="../comunes/logout.php" class="btn btn-danger">Logout</a>
                     <?php else: ?>
                         <a href="../comunes/login.php" class="btn btn-success">Login</a>
                     <?php endif ?>

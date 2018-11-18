@@ -34,8 +34,6 @@ CREATE TABLE usuarios
   , password VARCHAR(60) NOT NULL
 );
 
--- INSERT
-
 INSERT INTO usuarios (login, password)
 VALUES ('pepe', crypt('pepe', gen_salt('bf', 10)))
      , ('admin', crypt('admin', gen_salt('bf', 10)));

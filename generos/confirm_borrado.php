@@ -12,14 +12,24 @@
         <?php
         require './auxiliar.php';
         require '../comunes/auxiliar.php';
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-        } else {
-            header('Location: index.php');
-        }
+        if (!isset($_SESSION['usuario'])) {
+           $_SESSION['mensaje'] = 'Debe iniciar sesión para poder borrar géneros';
+           header('Location: index.php');
+       } elseif ($_SESSION['usuario'] != 'admin') {
+           $_SESSION['mensaje'] = 'Debe ser administrador para poder borrar géneros';
+           header('Location: index.php');
+       }
+
+       if (isset($_GET['id'])) {
+           $id = $_GET['id'];
+       } else {
+           header('Location: index.php');
+       }
         $pdo = conectar();
+
         if (!buscarGenero($pdo, $id)) {
-            header('Location: index.php');
+             $_SESSION['mensaje'] = $id . 'no existe';
+             header('Location: index.php');
         }
         ?>
         <div class="container">
