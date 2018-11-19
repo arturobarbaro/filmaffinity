@@ -13,16 +13,13 @@ function buscarGenero($pdo, $id)
     return $st->fetch();
 }
 
-function comprobarGenero($pdo, &$error)
+function comprobarGenero($pdo, $id)
 {
-    $error=[];
-    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
-    if ($fltGenero === '') {
-        $error['genero'] = 'El género es obligatorio.';
-    } elseif (mb_strlen($fltGenero) > 255) {
-        $error['genero'] = "El género es demasiado largo.";
+    $fila = buscarGenero($pdo, $id);
+    if ($fila === false) {
+        throw new ParamException();
     }
-    return $fltGenero;
+    return $fila;
 }
 
 function insertarGenero($pdo, $fila)

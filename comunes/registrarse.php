@@ -12,7 +12,6 @@
         <?php
         require './auxiliar.php';
         mostrarCabezera();
-        const PAR_LOGIN = ['login' => '', 'password' => ''];
         $valores = PAR_LOGIN;
         try {
             $error = [];
@@ -23,7 +22,6 @@
             $flt['password'] = comprobarPassword($error);
             $usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
-            // Sólo queda registrarse
             insertarUsuario($pdo,$flt);
             header('Location: login.php');
         } catch (EmptyParamException|ValidationException $e) {

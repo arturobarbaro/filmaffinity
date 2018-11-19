@@ -1,4 +1,6 @@
 <?php
+const PAR_LOGIN = ['login' => '', 'password' => ''];
+
 class ValidationException extends Exception
 {
 }
