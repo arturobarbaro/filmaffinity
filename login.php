@@ -10,9 +10,8 @@
     </head>
     <body>
         <?php
-        require './auxiliar.php';
+        require './comunes/auxiliar.php';
         mostrarCabezera();
-        const PAR_LOGIN = ['login' => '', 'password' => ''];
         $valores = PAR_LOGIN;
         try {
             $error = [];
@@ -57,7 +56,7 @@
         </div>
         <div class="row">
             <div class="text-center">
-                <a href="./registrarse.php" class="btn btn-info">Registrarse</a>
+                <a href="/registrarse.php" class="btn btn-info">Registrarse</a>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

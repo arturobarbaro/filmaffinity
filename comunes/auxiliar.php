@@ -182,11 +182,24 @@ function mostrarCabezera(){
             <div class="navbar-text navbar-right">
                     <?php if (isset($_SESSION['usuario'])): ?>
                         <?= $_SESSION['usuario'] ?>
-                        <a href="../comunes/logout.php" class="btn btn-danger">Logout</a>
+                        <a href="/logout.php" class="btn btn-danger">Logout</a>
                     <?php else: ?>
-                        <a href="../comunes/login.php" class="btn btn-success">Login</a>
+                        <a href="/login.php" class="btn btn-success">Login</a>
                     <?php endif ?>
             </div>
+        </div>
+    </nav>
+    <?php
+}
+
+function pie(){
+    ?>
+    <hr>
+    <nav class="navbar navbar-default navbar-inverse">
+        <div class="container">
+            <p class="">
+                Copyright (c) 2018 Todos los derechos reservados
+            </p>
         </div>
     </nav>
     <?php

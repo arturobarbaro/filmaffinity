@@ -10,7 +10,7 @@
     </head>
     <body>
         <?php
-        require './auxiliar.php';
+        require './comunes/auxiliar.php';
         mostrarCabezera();
         $valores = PAR_LOGIN;
         try {
@@ -23,6 +23,7 @@
             $usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
             insertarUsuario($pdo,$flt);
+            $_SESSION['mensaje'] = 'Usuario creado satisfactoriamente';
             header('Location: login.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
@@ -30,6 +31,7 @@
             header('Location: index.php');
         }
         ?>
+
         <div class="container">
             <div class="row">
                 <form action="" method="post">
