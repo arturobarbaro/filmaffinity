@@ -1,5 +1,5 @@
 <?php
-const PAR = [
+const PAR_GENEROS = [
     'genero' => '',
 ];
 //MIAS
@@ -13,13 +13,18 @@ function buscarGenero($pdo, $id)
     return $st->fetch();
 }
 
-function comprobarGenero($pdo, $id)
+function comprobarGenero($pdo, &$error)
 {
-    $fila = buscarGenero($pdo, $id);
-    if ($fila === false) {
-        throw new ParamException();
+    $fltGenero = trim(filter_input(INPUT_POST, 'genero'));
+    if ($fltGenero === '') {
+        $error['genero'] = 'El género es obligatorio.';
+    } elseif (mb_strlen($fltGenero) > 255) {
+        $error['genero'] = "El género es demasiado largo.";
     }
-    return $fila;
+    if (buscarGeneroPorGenero($pdo, $fltGenero)) {
+        $error['genero'] = 'El género ya existe.';
+    }
+    return $fltGenero;
 }
 
 function insertarGenero($pdo, $fila)
@@ -28,6 +33,13 @@ function insertarGenero($pdo, $fila)
                              VALUES (:genero)');
     $st->execute($fila);
 
+}
+
+function buscarGeneroPorGenero($pdo, $genero)
+{
+    $st = $pdo->prepare('SELECT * FROM generos WHERE genero = :genero');
+    $st->execute([':genero' => $genero]);
+    return $st->fetch();
 }
 
 function modificarGenero($pdo, $fila, $id)

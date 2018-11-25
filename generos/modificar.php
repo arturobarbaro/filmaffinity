@@ -22,7 +22,7 @@
             $id = comprobarId();
             $pdo = conectar();
             $fila = comprobarGenero($pdo, $id);
-            comprobarParametros(PAR);
+            comprobarParametros(PAR_GENEROS);
             $valores = array_map('trim', $_POST);
             $flt['genero'] = comprobarGenero($pdo, $error);
             comprobarErrores($error);
@@ -37,7 +37,7 @@
         ?>
         <div class="container">
             <?php
-                mostrarFormulario($fila, $error, $pdo, 'Modificar'); 
+                mostrarFormulario($fila, $error, $pdo, 'Modificar');
                 pie();
             ?>
         </div>
