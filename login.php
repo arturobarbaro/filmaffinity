@@ -11,8 +11,9 @@
     <body>
         <?php
         require './comunes/auxiliar.php';
+
         mostrarCabezera();
-        $valores = PAR_LOGIN;
+
         try {
             $error = [];
             $pdo = conectar();
@@ -24,7 +25,7 @@
             comprobarErrores($error);
             // Sólo queda loguearse
             $_SESSION['usuario'] = $usuario['login'];
-            header('Location: ../index.php');
+            header('Location: index.php');
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
         } catch (ParamException $e) {
@@ -51,13 +52,16 @@
                         <input class="form-control" type="password" name="password" value="">
                     </div>
                     <?php
-                    if (!comprobarLogin($error)){
-                        mensajeError('login', $error);
-                    } elseif (!comprobarPassword($error)){
-                        mensajeError('password', $error);
-                    } elseif (!comprobarUsuario($flt, $pdo, $error)){
-                        mensajeError('sesion', $error);
-                    }?>
+                    //if (!isset($_SESSION['mensaje'])){
+                        if (!comprobarLogin($error)){
+                            mensajeError('login', $error);
+                        } elseif (!comprobarPassword($error)){
+                            mensajeError('password', $error);
+                        } elseif (!comprobarUsuario($flt, $pdo, $error)){
+                            mensajeError('sesion', $error);
+                        }
+                    //}
+                    ?>
                     <button type="submit" class="btn btn-success">Iniciar sesión</button>
                 </form>
             </div>

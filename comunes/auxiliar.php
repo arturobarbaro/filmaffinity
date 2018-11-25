@@ -116,11 +116,23 @@ function selected($a, $b)
  * @param  array      $error   El array de errores
  * @return $login si existe y es valido
  */
-function comprobarLogin(&$error)
+ function comprobarLogin(&$error)
+ {
+     $login = trim(filter_input(INPUT_POST, 'login'));
+     if ($login === '') {
+         $error['login'] = 'El nombre de usuario no puede estar vacío.';
+     }
+     return $login;
+ }
+
+function comprobarNuevoLogin(&$error)
 {
+    $pdo=conectar();
     $login = trim(filter_input(INPUT_POST, 'login'));
     if ($login === '') {
         $error['login'] = 'El nombre de usuario no puede estar vacío.';
+    } elseif(buscarUsuarioPorUsuario($pdo, $login)){
+        $error['login'] = 'El nombre de usuario ya existe.';
     }
     return $login;
 }
@@ -137,6 +149,15 @@ function comprobarPassword(&$error)
         $error['password'] = 'La contraseña no puede estar vacía.';
     }
     return $password;
+}
+
+function comprobarNuevaPassword(&$error)
+{
+    $password = trim(filter_input(INPUT_POST, 'password'));
+    if ($password === '') {
+        $error['password'] = 'La contraseña no puede estar vacía.';
+    }
+    return password_hash($password, PASSWORD_BCRYPT);
 }
 /**
  * Comprueba si existe el usuario indicado en el array
@@ -164,7 +185,16 @@ function comprobarUsuario($valores, $pdo, &$error)
     return false;
 }
 
-function insertarUsuario($pdo,$fila){
+function buscarUsuarioPorUsuario($pdo, $login)
+{
+    $st = $pdo->prepare('SELECT * FROM usuarios WHERE login = :login');
+    $st->execute([':login' => $login]);
+    return $st->fetch();
+}
+
+
+function insertarUsuario($pdo,$fila)
+{
     $st = $pdo->prepare('INSERT INTO usuarios (login, password)
                          VALUES (:login, :password)');
     $st->execute($fila);
@@ -184,7 +214,7 @@ function mostrarCabezera()
             <div class="navbar-text navbar-right">
                 <?php if (isset($_SESSION['usuario'])): ?>
                     <?= $_SESSION['usuario'] ?>
-                    <a href="/logout.php" class="btn btn-success">Logout</a>
+                    <a href="/logout.php" class="btn btn-danger">Logout</a>
                 <?php else: ?>
                     <a href="/login.php" class="btn btn-success">Login</a>
                 <?php endif ?>

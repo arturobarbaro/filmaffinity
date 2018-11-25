@@ -18,9 +18,9 @@
             $pdo = conectar();
             comprobarParametros(PAR_LOGIN);
             $valores = array_map('trim', $_POST);
-            $flt['login'] = comprobarLogin($error);
-            $flt['password'] = comprobarPassword($error);
-            $usuario = comprobarUsuario($flt, $pdo, $error);
+            $flt['login'] = comprobarNuevoLogin($error);
+            $flt['password'] = comprobarNuevaPassword($error);
+            //$usuario = comprobarUsuario($flt, $pdo, $error);
             comprobarErrores($error);
             insertarUsuario($pdo,$flt);
             $_SESSION['mensaje'] = 'Usuario creado satisfactoriamente';
