@@ -103,7 +103,9 @@
                     <a href="insertar.php" class="btn btn-info">Insertar un genero</a>
                 </div>
             </div>
-            <?php if (!isset($_COOKIE['acepta'])): ?>
+            <?php
+            pie();
+            if (!isset($_COOKIE['acepta'])): ?>
                 <nav class="navbar navbar-fixed-bottom navbar-inverse">
                     <div class="container">
                         <div class="navbar-text navbar-right">
