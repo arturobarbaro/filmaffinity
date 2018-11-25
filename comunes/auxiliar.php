@@ -170,37 +170,50 @@ function insertarUsuario($pdo,$fila){
     $st->execute($fila);
 }
 
-function mostrarCabezera(){
-    ?>
+function mostrarCabezera()
+{ ?>
     <nav class="navbar navbar-default navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">FilmAffinity</a>
-                <a class="navbar-brand" href="/peliculas/">Películas</a>
-                <a class="navbar-brand" href="/generos/">Géneros</a>
             </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/peliculas/">Películas</a></li>
+                <li><a href="/generos/">Géneros</a></li>
+            </ul>
             <div class="navbar-text navbar-right">
-                    <?php if (isset($_SESSION['usuario'])): ?>
-                        <?= $_SESSION['usuario'] ?>
-                        <a href="/logout.php" class="btn btn-danger">Logout</a>
-                    <?php else: ?>
-                        <a href="/login.php" class="btn btn-success">Login</a>
-                    <?php endif ?>
+                <?php if (isset($_SESSION['usuario'])): ?>
+                    <?= $_SESSION['usuario'] ?>
+                    <a href="/logout.php" class="btn btn-success">Logout</a>
+                <?php else: ?>
+                    <a href="/login.php" class="btn btn-success">Login</a>
+                <?php endif ?>
             </div>
         </div>
     </nav>
     <?php
 }
 
-function pie(){
-    ?>
+function pie()
+{
+    if (!isset($_COOKIE['acepta'])): ?>
+        <nav class="navbar navbar-fixed-bottom navbar-inverse">
+            <div class="container">
+                <div class="navbar-text navbar-right">
+                    Tienes que aceptar las políticas de cookies.
+                    <a href="crear_cookie.php" class="btn btn-success">Aceptar cookies</a>
+                </div>
+            </div>
+        </nav>
+    <?php endif ?>
     <hr>
-    <nav class="navbar navbar-default navbar-inverse">
-        <div class="container">
-            <p class="">
-                Copyright (c) 2018 Todos los derechos reservados
-            </p>
-        </div>
-    </nav>
+    <div class="row">
+        <p class="text-right">Copyright (c) 2018 IES Doñana</p>
+    </div>
     <?php
+}
+
+function recogerGeneros($pdo)
+{
+    return $pdo->query('SELECT * FROM generos')->fetchAll();
 }

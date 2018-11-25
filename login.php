@@ -32,6 +32,14 @@
         }
         ?>
         <div class="container">
+            <?php if (isset($_SESSION['mensaje'])): ?>
+                <div class="row">
+                    <div class="alert alert-success" role="alert">
+                        <?= $_SESSION['mensaje'] ?>
+                    </div>
+                </div>
+                <?php unset($_SESSION['mensaje']); ?>
+            <?php endif ?>
             <div class="row">
                 <form action="" method="post">
                     <div class="form-group <?= hasError('login', $error) ?>">

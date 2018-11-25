@@ -28,6 +28,7 @@
         } catch (EmptyParamException|ValidationException $e) {
             // No hago nada
         } catch (ParamException $e) {
+            $_SESSION['mensaje'] = 'Error';
             header('Location: index.php');
         }
         ?>
