@@ -1,7 +1,11 @@
 <?php
+
+const FPP = 4;
+
 const PAR_GENEROS = [
     'genero' => '',
 ];
+
 //MIAS
 /**
  *

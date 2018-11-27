@@ -28,7 +28,9 @@
             <?php endif ?>
             <div class="row">
                 <?php
+
                 $pdo = conectar();
+
                 if (isset($_POST['id'])) {
                     $id = $_POST['id'];
                     $pdo->beginTransaction();
@@ -37,21 +39,47 @@
                         <h3>El género no existe.</h3>
                         <?php
                     } else {
-                        $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
-                        $st->execute([':id' => $id]); ?>
-                        <h3>Género borrado correctamente.</h3>
+                        if (buscarPeliculasPorGenero($pdo, $id)) { ?>
+                            <h3>Hay películas de ese género.</h3>
                         <?php
+                    } else {
+                            $st = $pdo->prepare('DELETE FROM generos WHERE id = :id');
+                            if (!$st->execute([':id' => $id])) {
+                                print_r($st->errorInfo());
+                            } else { ?>
+                                <h3>Género borrado correctamente.</h3>
+                            <?php
+                            }
+                        }
                     }
                     $pdo->commit();
                 }
+
                 $buscarGenero = isset($_GET['buscarGenero'])
                 ? trim($_GET['buscarGenero'])
                 : '';
+                $st = $pdo->prepare('SELECT count(*) AS numero
+                                       FROM generos
+                                      WHERE position(lower(:genero) in lower(genero)) != 0');
+                $st->execute([':genero' => $buscarGenero]);
+                $fila = $st->fetch();
+                $nfilas = $fila['numero'];
+                $npags = ceil($nfilas / FPP);
+                $pag = isset($_GET['pag']) &&
+                       ctype_digit($_GET['pag']) &&
+                       $_GET['pag'] >= 1 &&
+                       $_GET['pag'] <= $npags ? (int) $_GET['pag'] : 1;
                 $st = $pdo->prepare('SELECT *
                                        FROM generos
                                       WHERE position(lower(:genero) in lower(genero)) != 0
-                                   ORDER BY id');
-                $st->execute([':genero' => $buscarGenero]);
+                                   ORDER BY id
+                                      LIMIT :limit
+                                     OFFSET :offset');
+                $st->execute([
+                    ':genero' => $buscarGenero,
+                    ':limit' => FPP,
+                    ':offset' => ($pag - 1) * FPP,
+                ]);
                 ?>
             </div>
             <div class="row" id="busqueda">
@@ -60,7 +88,7 @@
                         <legend>Buscar...</legend>
                         <form action="" method="get" class="form-inline">
                             <div class="form-group">
-                                <label for="buscarGenero">Buscar por título:</label>
+                                <label for="buscarGenero">Buscar por género:</label>
                                 <input id="buscarGenero" type="text" name="buscarGenero"
                                        value="<?= $buscarGenero ?>"
                                        class="form-control">
@@ -72,15 +100,17 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-offset-3 col-md-6">
                     <table class="table table-bordered table-hover table-striped">
                         <thead>
+                            <th>Id</th>
                             <th>Género</th>
                             <th>Acciones</th>
                         </thead>
                         <tbody>
                             <?php foreach ($st as $fila): ?>
                                 <tr>
+                                    <td><?= h($fila['id']) ?></td>
                                     <td><?= h($fila['genero']) ?></td>
                                     <td>
                                         <a href="confirm_borrado.php?id=<?= $fila['id'] ?>"
@@ -96,6 +126,30 @@
                             <?php endforeach ?>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <?php $url = "index.php?buscarGenero=$buscarGenero" ?>
+            <div class="row">
+                <div class="text-center">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li <?= $pag == 1 ? 'class="disabled"' : '' ?> >
+                                <a href="<?= $url . '&pag=' . ($pag - 1) ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <?php for ($i = 1; $i <= $npags; $i++): ?>
+                                <li <?= $i == $pag ? 'class="active"' : '' ?> >
+                                    <a href="<?= $url . '&pag=' . $i ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor ?>
+                            <li <?= $pag == $npags ? 'class="disabled"' : '' ?> >
+                                <a href="<?= $url . '&pag=' . ($pag + 1) ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
             <div class="row">
